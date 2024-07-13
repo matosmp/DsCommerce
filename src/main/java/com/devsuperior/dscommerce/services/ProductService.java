@@ -3,14 +3,13 @@ package com.devsuperior.dscommerce.services;
 import com.devsuperior.dscommerce.dto.ProductDTO;
 import com.devsuperior.dscommerce.entities.Product;
 import com.devsuperior.dscommerce.repositories.ProductRepository;
+import com.devsuperior.dscommerce.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -20,10 +19,15 @@ public class ProductService {
 
     @Transactional(readOnly = true)  //anotação do spring e não do jakarta
     public ProductDTO findById(Long id) {
-       //Forma direta
-        Product product = repository.findById(id).get();
+
+        //Tratado a exceção com o orElseThrow atráves de uma exceção customizada
+        Product product = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Recurso não encontrado"));
         return new ProductDTO(product);
 
+        /* Buscando o produto por id sem tratar exceção
+         * Product product = repository.findById(id).get();
+         * return new ProductDTO(product);
+         */
         /* Forma mais didática para entender o passo a passo de um get no banco de dados
             Optional<Product> result = repository.findById(id);
             Product product = result.get();
