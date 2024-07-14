@@ -1,7 +1,4 @@
 package com.devsuperior.dscommerce.dto;
-
-import org.hibernate.Internal;
-
 import java.time.Instant;
 
 public class CustomErrorDTO {
