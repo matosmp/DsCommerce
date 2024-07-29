@@ -24,7 +24,7 @@ public class ProductService {
     public ProductDTO findById(Long id) {
 
         //Tratado a exceção com o orElseThrow atráves de uma exceção customizada
-        Product product = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Recurso não encontrado"));
+        Product product = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado"));
         return new ProductDTO(product);
 
         /* Buscando o produto por id sem tratar exceção
@@ -40,13 +40,13 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductDTO> findAll(Pageable pageable){
-        Page<Product> result = repository.findAll(pageable); // o Spring já tem um método findAll que recebe um objeto do tipo Pageable
+    public Page<ProductDTO> findAll(String name, Pageable pageable) {
+        Page<Product> result = repository.searchByName(name, pageable);
         return result.map(x -> new ProductDTO(x));
     }
 
     @Transactional
-    public ProductDTO insert(ProductDTO dto){
+    public ProductDTO insert(ProductDTO dto) {
         Product entity = new Product();
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
@@ -59,20 +59,19 @@ public class ProductService {
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
-    public void delete(Long id){
-        if(!repository.existsById(id)){
+    public void delete(Long id) {
+        if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Recurso não encontrado");
         }
         try {
             repository.deleteById(id);
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new DataBaseException("Falha de integridade referencial");
         }
     }
 
     @Transactional
-    public ProductDTO update(Long id , ProductDTO dto){
+    public ProductDTO update(Long id, ProductDTO dto) {
 
         try {
             /* getReferenceById não busca os dados no banco de dados, ele prepara os
@@ -80,22 +79,22 @@ public class ProductService {
              * atráves do método copyDtoToEntity
              * */
             Product entity = repository.getReferenceById(id);
-            copyDtoToEntity(dto,entity);
+            copyDtoToEntity(dto, entity);
             entity = repository.save(entity);
             return new ProductDTO(entity);
-        } catch (EntityNotFoundException E){
-                throw new ResourceNotFoundException("Recurso não encontrado");
+        } catch (EntityNotFoundException E) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
         }
 
     }
 
     private void copyDtoToEntity(ProductDTO dto, Product entity) {
 
-            entity.setName(dto.getName());
-            entity.setDescription(dto.getDescription());
-            entity.setPrice(dto.getPrice());
-            entity.setImgUrl(dto.getImgUrl());
-        }
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setPrice(dto.getPrice());
+        entity.setImgUrl(dto.getImgUrl());
     }
+}
 
 
