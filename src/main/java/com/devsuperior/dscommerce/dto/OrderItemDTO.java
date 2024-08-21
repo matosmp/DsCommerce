@@ -6,7 +6,7 @@ public class OrderItemDTO {
 
     private Long productId;
     private String name;
-    private Double price;
+    private Double price=0.00;
     private Integer quantity;
 
     public OrderItemDTO(Long productId, String name, Double price, Integer quantity) {
