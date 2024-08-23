@@ -28,7 +28,7 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> findAll() {
-        
+
         List<CategoryDTO> list = categoryService.findAll();
         return ResponseEntity.ok(list);
     }
