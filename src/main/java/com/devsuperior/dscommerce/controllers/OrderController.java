@@ -18,7 +18,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CLIENT')") //Para permitir que ambos consigam fazer o GET
     @GetMapping(value = "/{id}")
     public ResponseEntity<OrderDTO> findById (@PathVariable Long id){
         OrderDTO dto = orderService.findById(id);

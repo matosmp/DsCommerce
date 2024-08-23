@@ -83,6 +83,16 @@ public class User implements UserDetails {
         this.birthDate = birthDate;
     }
 
+    // Para verificar se o usuário tem um Role específico passado no argumento da função
+    public boolean hasRole (String roleName){
+        for (Role role : roles){
+            if(role.getAuthority().equals(roleName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles; // Retorna a coleção
@@ -133,15 +143,7 @@ public class User implements UserDetails {
         roles.add(role);
     }
 
-    //Verificar se tem uma determinada permissão
-    public  boolean hasRole(String roleName){
-        for(Role role : roles){
-            if(role.getAuthority().equals(roleName)){
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     @Override
     public boolean equals(Object o) {

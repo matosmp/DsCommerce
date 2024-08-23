@@ -29,11 +29,16 @@ public class OrderService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthService authService;
+
     @Transactional(readOnly = true)  //anotação do spring e não do jakarta
     public OrderDTO findById(Long id) {
 
         //Tratado a exceção com o orElseThrow atráves de uma exceção customizada
         Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado"));
+
+        authService.validateSelfOrAdmin(order.getClient().getId()); // Validando se o usuário é dono desse pedido ou ADMIN
         return new OrderDTO(order);
 
     }
